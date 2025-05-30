@@ -13,6 +13,7 @@ import {
   isEdgeToEdge,
 } from "react-native-is-edge-to-edge";
 import NativeModule from "./NativeRNBootSplash";
+import { ImageURISource } from "react-native/Libraries/Image/ImageSource";
 
 const EDGE_TO_EDGE = isEdgeToEdge();
 
@@ -27,6 +28,8 @@ export type Manifest = {
     width: number;
     height: number;
   };
+  assetNameAndroid: string;
+  assetNameIos: string;
   brand?: {
     bottom: number;
     width: number;
@@ -38,7 +41,7 @@ export type UseHideAnimationConfig = {
   manifest: Manifest;
   ready?: boolean;
 
-  logo?: ImageRequireSource;
+  logo?: ImageRequireSource | ImageURISource;
   darkLogo?: ImageRequireSource;
   brand?: ImageRequireSource;
   darkBrand?: ImageRequireSource;
@@ -129,7 +132,7 @@ export function useHideAnimation(config: UseHideAnimationConfig) {
       ? manifest.darkBackground
       : manifest.background;
 
-  const logoFinalSrc: ImageRequireSource | undefined = skipLogo
+  const logoFinalSrc: ImageRequireSource | ImageURISource | undefined = skipLogo
     ? undefined
     : darkModeEnabled && darkLogoSrc != null
       ? darkLogoSrc

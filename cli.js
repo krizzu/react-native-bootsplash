@@ -41,6 +41,15 @@ program
     "assets/bootsplash",
   )
   .option(
+    "--info-plist-filename <string>",
+    "Name of Info.plist file",
+    "Info.plist"
+  )
+  .option(
+    "--ios-output-path <string>",
+    "Output path for iOS, relative to iOS project root",
+  )
+  .option(
     "--flavor <string>",
     "Android flavor build variant (where your resource directory is)",
     "main",

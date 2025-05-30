@@ -490,10 +490,12 @@ const getIOSOutputPath = ({
   assetsOutputPath,
   isExpo,
   platforms,
+  iosOutput,
 }: {
   assetsOutputPath: string;
   isExpo: boolean;
   platforms: Platforms;
+  iosOutput?: string;
 }) => {
   if (!platforms.includes("ios")) {
     return;
@@ -509,7 +511,7 @@ const getIOSOutputPath = ({
   }
 
   const iosOutputPath = path
-    .resolve(ios.sourceDir, ios.xcodeProject.name)
+    .resolve(ios.sourceDir, iosOutput ?? ios.xcodeProject.name)
     .replace(/\.(xcodeproj|xcworkspace)$/, "");
 
   if (!hfs.exists(iosOutputPath)) {
@@ -630,6 +632,8 @@ export const generate = async ({
   html,
   flavor,
   licenseKey,
+  infoPlistFilename = "Info.plist",
+  iosOutputPath: iosOutputPathOverride,
   ...args
 }: {
   logo: string;
@@ -641,6 +645,8 @@ export const generate = async ({
   html: string;
   flavor: string;
 
+  infoPlistFilename?: string;
+  iosOutputPath?: string;
   licenseKey?: string;
   brand?: string;
   brandWidth: number;
@@ -763,6 +769,7 @@ export const generate = async ({
     assetsOutputPath,
     isExpo,
     platforms,
+    iosOutput: iosOutputPathOverride,
   });
 
   const htmlTemplatePath = await getHtmlTemplatePath({
@@ -1063,7 +1070,7 @@ export const generate = async ({
     );
 
     if (!isExpo) {
-      const infoPlistPath = path.resolve(iosOutputPath, "Info.plist");
+      const infoPlistPath = path.resolve(iosOutputPath, infoPlistFilename);
 
       const infoPlist = plist.parse(hfs.text(infoPlistPath)) as Record<
         string,
@@ -1188,6 +1195,8 @@ export const generate = async ({
 
   writeJson(path.resolve(assetsOutputPath, "manifest.json"), {
     background: background.hex,
+    assetNameAndroid: "bootsplash_logo.png",
+    assetNameIos: `BootSplashLogo-${fileNameSuffix}`,
     logo: {
       width: logoWidth,
       height: logoHeight,
